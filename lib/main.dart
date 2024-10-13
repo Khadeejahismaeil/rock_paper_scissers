@@ -1,125 +1,180 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  //This declares a class named MyApp that extends the StatelessWidget class.
+  //This means the UI built by this class won't change dynamically based on state updates.
 
-  // This widget is the root of your application.
+  const MyApp({super.key});
+  //This is the constructor of the MyApp class.
+  //It takes an optional argument named super.key which is required by StatelessWidget for key management.
+
   @override
   Widget build(BuildContext context) {
+    //build  method is called whenever the widget needs to rebuild its UI.
+    //It takes a BuildContext as input, which provides information about the widget's location.
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      //Inside the build method, the code returns a MaterialApp widget.
+      //This widget is the foundation for most Flutter applications using Material Design principles.
+      //It provides various features like app bar, navigation, themes, and more etc...
+      debugShowCheckedModeBanner: false,
+      //disables the debug banner.
+
+      title: 'Rock Paper Scissors', //the title of the app
+
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        //This defines the theme for the app.
+        primarySwatch: Colors.orange, //set to orange
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
+      // MyHomePage class is set as the initial screen where the UI will be built.
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  //MyHomePage class as a subclass of StatefulWidget
+  const MyHomePage({super.key}); // It takes an optional key parameter
+  //which is used to identify the widget in the widget tree.
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+  //It's responsible for creating and returning a state object associated with the MyHomePage widget.
+  //it creates an instance of the _MyHomePageState class, which will manage the state of the MyHomePage widget.
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String player1Choice = 'rock';
+  String player2Choice = 'rock';
+  String result = 'both are winners';
+  //the variables store the current choices of players and outcome.
 
-  void _incrementCounter() {
+  List<String> choices = ['rock', 'paper', 'scissors'];
+//This list contains the possible game options
+  void play() {
+    //This function is triggered when the "Play" button is pressed
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      // method to update the UI whenever the game state changes
+      player1Choice = choices[Random().nextInt(choices.length)];
+      player2Choice = choices[Random().nextInt(choices.length)];
+      //randomly assigned values from the choices list
+      result = _getWinner(player1Choice, player2Choice);
+      //stores the game's outcome in the result variable
     });
+  }
+
+  String _getWinner(String player1, String player2) {
+    //This function takes the choices of both players as input and returns the game result.
+    /*It uses a series of if-else statements to compare the choices and determine the winner based on the rock-paper-scissors rules:
+If the choices are the same, it's a tie ("both are winners").
+Otherwise, it checks each player's choice and the other player's choice:
+If a player chooses "rock" and the other chooses "scissors", the first player wins.
+Similar logic applies for paper vs. rock and scissors vs. paper.*/
+    if (player1 == player2) {
+      return 'both are winners';
+    } else if (player1 == 'rock') {
+      if (player2 == 'scissors') {
+        return 'Player 1 Wins!';
+      } else {
+        return 'Player 2 Wins!';
+      }
+    } else if (player1 == 'paper') {
+      if (player2 == 'rock') {
+        return 'Player 1 Wins!';
+      } else {
+        return 'Player 2 Wins!';
+      }
+    } else {
+      // player1 == 'scissors'
+      if (player2 == 'paper') {
+        return 'Player 1 Wins!';
+      } else {
+        return 'Player 2 Wins!';
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      //provides the overall layout
+      backgroundColor: const Color.fromARGB(255, 255, 244, 228),
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        //defines the app bar with a title, centered text, and an orange background
+        title: const Text('Rock Paper Scissors',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: Colors.orange,
       ),
+
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+        /*body contains a Center widget that positions the game elements in the center:
+          A Text widget displays the current result.
+          A Row layout holds two columns for each player:
+          Each column contains an Image.asset widget that displays the chosen image using string.
+          A Text widget displays "player1" and "player2" below the image.
+          An ElevatedButton with styled background and text allows the user to play the game again.*/
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+          children: [
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              result,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/$player1Choice.png',
+                      height: 150,
+                      width: 150,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text("player1")
+                  ],
+                ),
+                const SizedBox(width: 100),
+                Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/$player2Choice.png',
+                      height: 150,
+                      width: 150,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text("player2")
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: play,
+              child: const Text(
+                'Play',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.orange),
+                shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                )),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
